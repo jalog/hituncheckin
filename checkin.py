@@ -15,6 +15,7 @@ import json
 import re
 import os
 from datetime import datetime
+import notify
 
 # 配置信息
 LOGIN_URL = "https://hitun.io/user/"
@@ -179,7 +180,8 @@ def main():
         log_message("建议手动配置cookies以提高成功率")
     
     result = checkin()
-    
+
+    notify.send("Hitun", result.message)
     log_message("签到任务完成")
     log_message("=" * 50)
     
