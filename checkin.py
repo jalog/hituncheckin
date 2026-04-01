@@ -28,7 +28,7 @@ PROXY = {
     "https": os.getenv("PROXY")
 }
 
-COOKIES = process.env.hitun_cookie
+COOKIES = os.getenv("hitun_cookie")
 
 def log_message(message):
     print(message)
