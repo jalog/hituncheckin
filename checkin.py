@@ -128,38 +128,18 @@ def checkin():
         log_message(f"响应头: {dict(checkin_response.headers)}")
         
         # 处理压缩响应
-        response_text = ""
-        try:
-            if checkin_response.headers.get('Content-Encoding') == 'br':
-                import brotli
-                response_text = brotli.decompress(checkin_response.content).decode('utf-8')
-            elif checkin_response.headers.get('Content-Encoding') == 'gzip':
-                import gzip
-                response_text = gzip.decompress(checkin_response.content).decode('utf-8')
-            else:
-                response_text = checkin_response.text
-        except Exception as e:
-            log_message(f"解码响应失败: {str(e)}")
-            response_text = checkin_response.content.decode('utf-8', errors='ignore')
+        response_text = checkin_response.content.decode('utf-8', errors='ignore')
         
         # 尝试解析JSON响应
         try:
             result_json = json.loads(response_text)
             log_message(f"签到结果 (JSON): {json.dumps(result_json, ensure_ascii=False, indent=2)}")
+            notify.send("Hitun", f"签到结果 (JSON): {json.dumps(result_json, ensure_ascii=False, indent=2)}")
             return {"success": True, "data": result_json}
         except:
             log_message(f"签到响应内容: {response_text[:1000]}")
-            
-            # 检查响应中是否包含成功标志
-            if "成功" in response_text or "success" in response_text.lower():
-                log_message("签到成功！")
-                return {"success": True, "message": "签到可能成功"}
-            elif "已签到" in response_text or "already" in response_text.lower():
-                log_message("今日已签到")
-                return {"success": True, "message": "今日已签到"}
-            else:
-                log_message("签到结果未知")
-                return {"success": False, "message": "签到结果未知"}
+            notify.send("Hitun", f"签到响应内容: {response_text[:1000]}")
+            return {"success": False, "message": "签到结果未知"}
         
     except requests.exceptions.RequestException as e:
         error_msg = f"网络错误: {str(e)}"
@@ -181,7 +161,6 @@ def main():
     
     result = checkin()
 
-    notify.send("Hitun", result.message)
     log_message("签到任务完成")
     log_message("=" * 50)
     
