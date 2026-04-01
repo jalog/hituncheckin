@@ -24,8 +24,8 @@ USERNAME = os.getenv("HITUN_USERNAME")
 PASSWORD = os.getenv("HITUN_PASSWORD")
 
 PROXY = {
-    "http": os.getenv("ProxyUrl"),
-    "https": os.getenv("ProxyUrl")
+    "http": os.getenv("PROXY"),
+    "https": os.getenv("PROXY")
 }
 
 COOKIES = os.getenv("hitun_cookie")
